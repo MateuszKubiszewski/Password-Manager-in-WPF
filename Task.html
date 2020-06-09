@@ -1,0 +1,158 @@
+﻿
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <title>Windows Presentation Foundation - Home Task</title>
+        <meta http-equiv="Content-type" content="text/html; charset=UTF-8" />
+    </head>
+    <body>
+        <h1>Password Manager</h1>
+        <p>
+            Your task is to extend the password manager application from the lab part. There will be added support for saving the encrypted user data, storing images and extending the password editor and directory tree. This is a second part of WPF Task for 12 points. In case of any doubts concerning the task, please inspect the sample application or consult your teacher.
+        </p>
+        <h2>Home Part</h2>
+        <ul>
+            <li><a href="WPF14_HomeTask.exe">Sample Application</a></li>
+        </ul>
+        <ul>
+            <li>
+                Serialization and encription:
+                <ul>
+                    <li>"Save" menu item creates "Passwords.bin" file in the program directory and stores there the encripted user data (diretories and files). For encription use provided library <a href="DataEncription.dll">DataEncription.dll</a> </li>
+                    <li>If the "Passwords.bin" file exists, then the password inputted during the login will be used to decrypt data after login</li>
+                    <li>If the password is incorrect (DataEncryption.Decrypt method returns null) then the message box with an error is shown</li>
+                    <li>If the "Passwords.bin" file does not exist, then the login always succeeds and the password inputted during the login will be used to encrypt data during saving</li>
+                </ul>
+            </li>
+        </ul>
+        <ul>
+            <li>
+                Files and directories tree:
+                <ul>
+                    <li>All items in the tree have context menu. For all items there is a name of the item, an option to delete and to rename</li>
+                    <li>Items can be deleted</li>
+                    <li>Items can be renamed. During renaming the item in the tree changes to editable field. Field reverts back after presing the Enter key or after item looses focus</li>
+                    <li>All file types and directories can be added to any directory</li>
+                </ul>
+            </li>
+        </ul>
+        <ul>
+            <li>
+                Image file:
+                <ul>
+                    <li>Adding image file opens image select dialog. The filter in the dialog is set to the supported image types</li>
+                    <li>If the dialog is closed, the file is not created</li>
+                    <li>Selected image displays in the right side of the application</li>
+                    <li>"Save Image" button under the image allows for image saving with save file dialog. Image is saved as PNG and the correct filter in the dialog is set</li>
+                </ul>
+            </li>
+        </ul>
+        <ul>
+            <li>
+                Password generator:
+                <ul>
+                    <li>"Password Generator" menu opens Password Generator window</li>
+                    <li>Window title: "Password Generator"</li>
+                    <li>Window size: 400x400</li>
+                    <li>Window cannot be resized</li>
+                    <li>Window always opens in the center of the main application window</li>
+                    <li>When the window is visible, the main application window cannot be selected</li>
+                    <li>Font size for all elements is 14</li>
+                    <li>Sections separated with a horizontal line</li>
+                    <li>Bold font of size 15 for the section names</li>
+                </ul>
+                <br />
+                <ul>
+                    <li>White password with the colored background. Password font is "Consolas". Background color matches password strength</li>
+                    <li>Password text can be selected and copied with a mouse</li>
+                    <li>Displaying the strength of the password</li>
+                    <li>Rounded and transparent "Refresh" and "Copy" buttons</li>
+                    <li>"Refresh" generates new password</li>
+                    <li>"Copy" copies current password to the clipboard</li>
+                </ul>
+                <br />
+                <ul>
+                    <li>Slider with password length. Value displays to the right of a slider. Minimum is 1, maximum is 128 and default value is 8</li>
+                    <li>Checkboxes to include in a password additional symbols: "Upper case letters", "Digits" and "Symbols": !#$%&()*+,-./:;<=>?@[\\]^_{|}~</li>
+                    <li>Displaying sliders with numeric values for each checked option</li>
+                    <li>Options to use the "Minimum" number of checked symbols or "Exactly" that number of symbols</li>
+                    <li>Generating password fitting all the criteria. Default password symbols are lowercase letters</li>
+                    <li>Displaying error message instead of a password for options that cannot be fulfilled. The buttons are then hidden</li>
+                    <li>Change of any option instantly generates a new password</li>
+                </ul>
+            </li>
+        </ul>
+        <ul>
+            <li>
+                Password list:
+                <ul>
+                    <li>Passwords are sorted by name and grouped by first letter of a name</li>
+                    <li>Group header has gray background and white text</li>
+                    <li>Search bar with "Search..." placeholder</li>
+                    <li>Searching instantly filters passwords with name containing given string</li>
+                </ul>
+            </li>
+        </ul>
+        <ul>
+            <li>
+                Password viewer and editor
+                <ul>
+                    <li>Two modes for selected password view: for viewing and for editing</li>
+                    <li>Nothing is displayed if there is no password item selected</li>
+                    <li>Light gray bar on the bottom of the view</li>
+                    <li>The vertical scroll bar for the view appears when the content does not fit in the window</li>
+                </ul>
+                <br />
+                <ul>
+                    <li>Default is view mode</li>
+                    <li>Displaying only non-empty password fields: Icon, Name, Email, Login, Password, Password strength progress bar with color corresponding password strength color, Website link, Notes</li>
+                    <li>Login and Password use "Consolas" font</li>
+                    <li>Password is masked</li>
+                    <li>Next to the "Email", "Login" and "Password" there are rounded buttons to copy the field to the clipboard</li>
+                    <li>Clicking on email launches system default mailing client</li>
+                    <li>Clicking on website launches default browser and navigates to specified website</li>
+                    <li>Displaying password "Creation time" and "Last edit time"</li>
+                    <li>Rounded button on the bottom of the page to "Edit" and to "Delete" password</li>
+                    <li>"Edit" button switches to edit mode</li>
+                    <li>"Delete" button removes the password</li>
+                    <li>Adding new password switches to edit mode</li>
+                </ul>
+                <br />
+                <ul>
+                    <li>In edit mode the list, adding button and the filter are inactive</li>
+                    <li>To the right of the image there are image parameters: Resolution, DPI and Format</li>
+                    <li>"Generate" button below the password. It launches Password Generator window with the "Choose" button on the bottom</li>
+                    <li>Clicking "Choose" button sets the currently generated password in the password field and closes the window</li>
+                    <li>If the generator window is closed then the password is not set</li>
+                    <li>Button on the bottom of the view change to "Apply" and "Cancel"</li>
+                    <li>"Apply" button updates the password and switches back to view mode. If any changes were made, then the "Last edit time" is updated</li>
+                    <li>"Cancel" button switches back to view mode without modifying the password data</li>
+                </ul>
+            </li>
+        </ul>
+        <ul>
+            <li>
+                Tips:
+
+                <ul>
+                    <li>
+                        BinaryFormatter, MemoryStream, ICommand, DependencyProperty.RegisterAttached, ShowDialog, CollectionViewSource, GroupStyle, ContentControl
+                    </li>
+                </ul>
+            </li>
+
+            <li>
+                Points:
+
+                <ul>
+                    <li>Serialization and encryption <strong>2p</strong></li>
+                    <li>Tree view <strong>1p</strong></li>
+                    <li>Image file <strong>1p</strong></li>
+                    <li>Password generator <strong>3p</strong></li>
+                    <li>Password list <strong>2p</strong></li>
+                    <li>Password viewer and editor <strong>3p</strong></li>
+                </ul>
+            </li>
+        </ul>
+    </body>
+</html>

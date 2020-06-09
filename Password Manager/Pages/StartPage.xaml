@@ -21,7 +21,7 @@
         <Border Height="80" Width="200" Grid.Row="1" Grid.Column="1">
             <StackPanel Grid.Row="1" Grid.Column="1">
                 <TextBlock Text="Password:"/>
-                <PasswordBox/>
+                <PasswordBox x:Name="passwordBox"/>
                 <Button Click="LoginClick" Content="Unlock"/>
             </StackPanel>
         </Border>

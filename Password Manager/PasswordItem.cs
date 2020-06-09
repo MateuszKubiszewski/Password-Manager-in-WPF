@@ -9,10 +9,11 @@ using System.Windows.Media.Imaging;
 
 namespace Password_Manager
 {
+    [Serializable]
     public class PasswordItem : INotifyPropertyChanged
     {
-        BitmapImage icon;
-        public BitmapImage Icon
+        string icon;
+        public string Icon
         {
             get { return icon; }
             set
@@ -91,13 +92,13 @@ namespace Password_Manager
                 NotifyPropertyChanged();
             }
         }
-        DateTime edittime;
+        DateTime editdate;
         public DateTime EditDate
         {
-            get { return edittime; }
+            get { return editdate; }
             set
             {
-                edittime = value;
+                editdate = value;
                 NotifyPropertyChanged();
             }
         }
@@ -127,6 +128,7 @@ namespace Password_Manager
             EditDate = pass.EditDate;
         }
 
+        [field: NonSerialized()]
         public event PropertyChangedEventHandler PropertyChanged;
 
         public void UpdateProperty(string property, string value)

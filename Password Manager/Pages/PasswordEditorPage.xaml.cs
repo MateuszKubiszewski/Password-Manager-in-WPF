@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -20,8 +22,6 @@ namespace Password_Manager.Pages
     /// </summary>
     public partial class PasswordEditorPage : Page
     {
-        PasswordItem tempPass;
-
         public PasswordEditorPage()
         {
             InitializeComponent();
@@ -30,23 +30,12 @@ namespace Password_Manager.Pages
         private void AddClick(object sender, RoutedEventArgs e)
         {
             PasswordItem pass = new PasswordItem(System.DateTime.Now);
-            //var item = new ListViewItem();
-            //item.Name = "Account Name";
-            //PasswordList.Items.Add(item)
-            ((this.DataContext as Data).File as Passwords).PasswordsList.Add(pass);
-            (this.DataContext as Data).NotifyPropertyChanged("File");
+            (this.DataContext as Passwords).Add(pass);
             PasswordList.SelectedItem = pass;
             PasswordForm.Visibility = Visibility.Visible;
             SavedForm.Visibility = Visibility.Hidden;
+            TurnOnEditMode();
         }
-
-        //private void textChangedEventHandler(object sender, TextChangedEventArgs args)
-        //{
-        //    TextBox textBox = (TextBox)sender;
-        //    PasswordItem item = PasswordList.SelectedItem as PasswordItem;
-        //    item.UpdateProperty(textBox.Name, textBox.Text);
-        //    (this.DataContext as Data).NotifyPropertyChanged("File");
-        //}
 
         //https://www.c-sharpcorner.com/UploadFile/mahesh/using-xaml-image-in-wpf/
         private void AddImageClick(object sender, RoutedEventArgs e)
@@ -60,60 +49,59 @@ namespace Password_Manager.Pages
 
             if (dlg.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                BitmapImage bitmap = new BitmapImage();
-                bitmap.BeginInit();
-                bitmap.UriSource = new Uri(dlg.FileName);
-                bitmap.EndInit();
-                item.Icon = bitmap;
+                item.Icon = dlg.FileName;
             }
-
-            (this.DataContext as Data).NotifyPropertyChanged("File");
+            long toAdd = System.DateTime.Now.Ticks - item.EditDate.Ticks;
+            item.EditDate = item.EditDate.Add(new TimeSpan(toAdd));
+            (this.DataContext as Passwords).NotifyPropertyChanged("PasswordList");
         }
 
         private void ApplyClick(object sender, RoutedEventArgs e)
         {
             PasswordItem item = PasswordList.SelectedItem as PasswordItem;
 
+            if (item.Name == Name.Text && item.Login == Login.Text && item.Email == Email.Text && 
+                item.Website == Website.Text && item.Notes == Notes.Text && item.Password == Password.Text)
+            {
+                PasswordForm.Visibility = Visibility.Hidden;
+                SavedForm.Visibility = Visibility.Visible;
+                TurnOffEditMode();
+                return;
+            }
             item.Name = Name.Text;
             item.Login = Login.Text;
             item.Email = Email.Text;
             item.Password = Password.Text;
             item.Website = Website.Text;
             item.Notes = Notes.Text;
-            //long toAdd = System.DateTime.Now.Ticks - item.EditDate.Ticks;
-            //item.EditDate.Add(new TimeSpan(toAdd));
-
-            tempPass = new PasswordItem(item);
-
+            long toAdd = System.DateTime.Now.Ticks - item.EditDate.Ticks;
+            item.EditDate = item.EditDate.Add(new TimeSpan(toAdd));
+            //http://drwpf.com/blog/2008/10/20/itemscontrol-e-is-for-editable-collection/
+            var itemToAdd = new PasswordItem(item);
+            (this.DataContext as Passwords).Remove(PasswordList.SelectedItem as PasswordItem);
+            (this.DataContext as Passwords).Add(itemToAdd);
+            PasswordList.SelectedItem = itemToAdd;
             PasswordForm.Visibility = Visibility.Hidden;
             SavedForm.Visibility = Visibility.Visible;
-
-            (this.DataContext as Data).NotifyPropertyChanged("File");
+            TurnOffEditMode();
         }
 
         private void CancelClick(object sender, RoutedEventArgs e)
         {
-
-            (PasswordList.SelectedItem as PasswordItem).Reset(tempPass);
-
             PasswordForm.Visibility = Visibility.Hidden;
             SavedForm.Visibility = Visibility.Visible;
-            
-            (this.DataContext as Data).NotifyPropertyChanged("File");
+            TurnOffEditMode();
         }
 
         private void NewSelection(object sender, SelectionChangedEventArgs e)
         {
-            this.tempPass = new PasswordItem((PasswordItem)(sender as ListView).SelectedItem);
             PasswordForm.Visibility = Visibility.Hidden;
             SavedForm.Visibility = Visibility.Visible;
         }
 
         private void DeleteClick(object sender, RoutedEventArgs e)
         {
-            ((this.DataContext as Data).File as Passwords).Items.Remove((PasswordItem)PasswordList.SelectedItem);
-
-            (this.DataContext as Data).NotifyPropertyChanged("File");
+            (this.DataContext as Passwords).Remove(PasswordList.SelectedItem as PasswordItem);
             PasswordForm.Visibility = Visibility.Hidden;
             SavedForm.Visibility = Visibility.Hidden;
         }
@@ -122,6 +110,7 @@ namespace Password_Manager.Pages
         {
             PasswordForm.Visibility = Visibility.Visible;
             SavedForm.Visibility = Visibility.Hidden;
+            TurnOnEditMode();
         }
 
         private void CopyEmail(object sender, RoutedEventArgs e)
@@ -131,12 +120,60 @@ namespace Password_Manager.Pages
 
         private void CopyPass(object sender, RoutedEventArgs e)
         {
-            Clipboard.SetText(SavedPassword.Text);
+            Clipboard.SetText((PasswordList.SelectedItem as PasswordItem).Password);
         }
 
         private void CopyLogin(object sender, RoutedEventArgs e)
         {
             Clipboard.SetText(SavedLogin.Text);
+        }
+
+        private void NavigateWebsite(object sender, RequestNavigateEventArgs e)
+        {
+            try
+            {
+                Process.Start(e.Uri.AbsoluteUri);
+            } catch 
+            {
+                MessageBox.Show("Operation not supported for relative URI.", "Invalid website link", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            e.Handled = true;
+        }
+
+        void TurnOffEditMode()
+        {
+            PasswordList.IsEnabled = true;
+            if (SearchTextBox.Text == null || SearchTextBox.Text == "")
+                AddPassword.IsEnabled = true;
+            else
+                AddPassword.IsEnabled = false;
+            SearchTextBox.IsEnabled = true;
+        }
+
+        void TurnOnEditMode()
+        {
+            PasswordList.IsEnabled = false;
+            AddPassword.IsEnabled = false;
+            SearchTextBox.IsEnabled = false;
+        }
+
+        private void SearchTextChanged(object sender, TextChangedEventArgs e)
+        {
+            PasswordList.Items.Filter = MyFilter;
+        }
+
+        private bool MyFilter(object item)
+        {
+            if (SearchTextBox.Text == null || SearchTextBox.Text == "")
+            {
+                AddPassword.IsEnabled = true;
+                return true;
+            }
+            else
+            {
+                AddPassword.IsEnabled = false;
+                return (item as PasswordItem).Name.ToLower().Contains(SearchTextBox.Text.ToLower());
+            }
         }
     }
 }

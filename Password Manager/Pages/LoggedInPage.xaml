@@ -9,55 +9,9 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Page.Resources>
-        <local:AmIVisible x:Key="amIVisible"/>
-        <!--<ContextMenu x:Key="passwordsContextMenu">
-            <MenuItem Header="New Passwords" IsEnabled="False"/>
-            <Separator/>
-            <MenuItem Header="Rename" Click="Rename"/>
-            <MenuItem Header="Delete" Click="Delete"/>
-        </ContextMenu>
-        <ContextMenu x:Key="imageContextMenu">
-            <MenuItem Header="New Image" IsEnabled="False"/>
-            <Separator/>
-            <MenuItem Header="Rename" Click="Rename"/>
-            <MenuItem Header="Delete" Click="Delete"/>
-        </ContextMenu>
-        <ContextMenu x:Key="directoryContextMenu">
-            <MenuItem Header="New Directory" IsEnabled="False"/>
-            <Separator/>
-            <MenuItem Header="Add Directory" Click="AddDir"/>
-            <MenuItem Header="Add File">
-                <MenuItem Header="Passwords" Click="AddPass"/>
-                <MenuItem Header="Image" Click="AddImg"/>
-            </MenuItem>
-            <Separator/>
-            <MenuItem Header="Rename" Click="Rename"/>
-            <MenuItem Header="Delete" Click="Delete"/>
-        </ContextMenu>-->
-        <ContextMenu x:Key="passwordsContextMenu">
-            <MenuItem Header="New Passwords" IsEnabled="False"/>
-            <Separator/>
-            <MenuItem Header="Rename" Click="Rename"/>
-            <MenuItem Header="Delete" Click="Delete"/>
-        </ContextMenu>
-        <ContextMenu x:Key="imageContextMenu">
-            <MenuItem Header="New Image" IsEnabled="False"/>
-            <Separator/>
-            <MenuItem Header="Rename" Click="Rename"/>
-            <MenuItem Header="Delete" Click="Delete"/>
-        </ContextMenu>
-        <ContextMenu x:Key="directoryContextMenu">
-            <MenuItem Header="New Directory" IsEnabled="False"/>
-            <Separator/>
-            <MenuItem Header="Add Directory" Click="AddDir"/>
-            <MenuItem Header="Add File">
-                <MenuItem Header="Passwords" Click="AddPass"/>
-                <MenuItem Header="Image" Click="AddImg"/>
-            </MenuItem>
-            <Separator/>
-            <MenuItem Header="Rename" Click="Rename"/>
-            <MenuItem Header="Delete" Click="Delete"/>
-        </ContextMenu>
+        <local:IsTextVisible x:Key="isTextVisible"/>
+        <local:IsBlockVisible x:Key="isBlockVisible"/>
+        <local:Test x:Key="Test"/>
         <ContextMenu x:Key="baseContextMenu">
             <MenuItem Header="Add Directory" Click="AddDir"/>
             <MenuItem Header="Add File">
@@ -76,99 +30,70 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Menu Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="0" FlowDirection="RightToLeft" FontSize="14">
-            <MenuItem Header="Save"/>
+            <MenuItem Header="Save" Click="SaveClick"/>
             <MenuItem Header="Logout" Click="LogoutClick"/>
             <MenuItem Header="Password Generator"/>
         </Menu>
         <TreeView x:Name="FilesList" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
-                  ContextMenu="{DynamicResource baseContextMenu}">
-            <!--ContextMenu="{DynamicResource baseContextMenu}">-->
-            <!--<TreeView.Resources>
-                <Style TargetType="TreeViewItem">
-                    <EventSetter Event="MouseRightButtonDown" Handler="TreeViewItem_MouseRightButtonDown"/>
-                    <EventSetter Event="PreviewMouseLeftButtonDown" Handler="TreeViewItem_MouseLeftButtonDown"/>
-                    <EventSetter Event="MouseLeftButtonDown"  Handler="TreeViewItem_MouseLeftButtonDown"/>
-                </Style>
-                <Style TargetType="TreeView">
-                    <EventSetter Event="MouseRightButtonDown" Handler="TreeView_MouseRightButtonDown"/>
-                </Style>
-            </TreeView.Resources>-->
+                  ContextMenu="{StaticResource baseContextMenu}" ItemsSource="{Binding}">
             <TreeView.Resources>
-                <HierarchicalDataTemplate DataType="{x:Type local2:Directory}" ItemsSource="{Binding Path=Items}">
+                <HierarchicalDataTemplate DataType="{x:Type local2:Directory}" ItemsSource="{Binding Files, Converter={StaticResource Test}}">
                     <StackPanel>
                         <StackPanel.ContextMenu>
                             <ContextMenu>
-                                <MenuItem Header="{Binding Header}" IsEnabled="False"/>
+                                <MenuItem Header="{Binding Name}" IsEnabled="False"/>
                                 <Separator/>
-                                <MenuItem Header="Add Directory" Click="AddDir"/>
+                                <MenuItem Header="Add Directory" Click="AddDir_Dir"/>
                                 <MenuItem Header="Add File">
-                                    <MenuItem Header="Passwords" Click="AddPass"/>
-                                    <MenuItem Header="Image" Click="AddImg"/>
+                                    <MenuItem Header="Passwords" Click="AddPass_Dir"/>
+                                    <MenuItem Header="Image" Click="AddImg_Dir"/>
                                 </MenuItem>
                                 <Separator/>
-                                <MenuItem Header="Rename" Click="Rename"/>
-                                <MenuItem Header="Delete" Click="Delete"/>
+                                <MenuItem Header="Rename" Click="Rename_Dir"/>
+                                <MenuItem Header="Delete" Click="Delete_Dir"/>
                             </ContextMenu>
                         </StackPanel.ContextMenu>
-                        <TextBlock x:Name="DirectoryNameBlock" Text="{Binding Path=Header, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
-                                   FontWeight="Bold"  HorizontalAlignment="Center" VerticalAlignment="Center" 
-                                   Visibility="{Binding IsBeingEdited, Converter={StaticResource amIVisible}, UpdateSourceTrigger=PropertyChanged}"/>
-                        <TextBox x:Name="DirectoryNameBox" Text="{Binding Path=Header, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
-                                 FontWeight="Bold"  HorizontalAlignment="Center" VerticalAlignment="Center" 
-                                 Visibility="{Binding IsBeingEdited, Converter={StaticResource amIVisible}, UpdateSourceTrigger=PropertyChanged}" />
-                        <!--  KeyDown="DirectoryNameBox_KeyDown"/>-->
+                        <TextBlock Text="{Binding Name}" FontWeight="Bold"  HorizontalAlignment="Center" VerticalAlignment="Center" 
+                                   Visibility="{Binding IsBeingEdited, Converter={StaticResource isBlockVisible}}"/>
+                        <TextBox Text="{Binding Name}" FontWeight="Bold"  HorizontalAlignment="Center" VerticalAlignment="Center" 
+                                 Visibility="{Binding IsBeingEdited, Converter={StaticResource isTextVisible}}" KeyDown="EndEditing_Dir"/>
                     </StackPanel>
                 </HierarchicalDataTemplate>
-
-                <!-- Image -->
                 <DataTemplate DataType="{x:Type local2:Image}">
                     <StackPanel>
                         <StackPanel.ContextMenu>
                             <ContextMenu>
-                                <MenuItem Header="{Binding Header}" IsEnabled="False"/>
-                                <MenuItem Header="Rename" Click="Rename"/>
-                                <MenuItem Header="Delete" Click="Delete"/>
+                                <MenuItem Header="{Binding Name}" IsEnabled="False"/>
+                                <MenuItem Header="Rename" Click="Rename_Img"/>
+                                <MenuItem Header="Delete" Click="Delete_Img"/>
                             </ContextMenu>
                         </StackPanel.ContextMenu>
-                        <!--  <TextBlock x:Name="ImageNameBlock" Text="chujchujchuj" FontStyle="Italic"/> -->
-                        <TextBlock x:Name="ImageNameBlock" Text="{Binding Name}" FontStyle="Italic"  
-                                   HorizontalAlignment="Center" VerticalAlignment="Center" 
-                                   Visibility="{Binding Path=IsBeingEdited, Converter={StaticResource amIVisible}}"/>
-                        <!--<TextBox x:Name="ImageNameBox" Text="{Binding Path=Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FontStyle="Italic"  
-                                 HorizontalAlignment="Center" VerticalAlignment="Center" 
-                                 Visibility="{Binding IsBeingEdited, Converter={StaticResource amIVisible}, UpdateSourceTrigger=PropertyChanged}" />-->
-                        <!-- KeyDown="ImageNameBox_KeyDown" />-->
+                        <TextBlock Text="{Binding Name}" FontStyle="Italic"  HorizontalAlignment="Center" VerticalAlignment="Center" 
+                                   Visibility="{Binding IsBeingEdited, Converter={StaticResource isBlockVisible}}"/>
+                        <TextBox Text="{Binding Name}" FontStyle="Italic"  HorizontalAlignment="Center" VerticalAlignment="Center" 
+                                 Visibility="{Binding IsBeingEdited, Converter={StaticResource isTextVisible}}" KeyDown="EndEditing_Img"/>
                     </StackPanel>
                 </DataTemplate>
-
-                <!-- Password -->
-                <DataTemplate x:Key="PassTemplate" DataType="{x:Type local2:Passwords}">
+                <DataTemplate DataType="{x:Type local2:Passwords}">
                     <StackPanel>
                         <StackPanel.ContextMenu>
                             <ContextMenu>
-                                <MenuItem Header="{Binding Header}" IsEnabled="False"/>
-                                <MenuItem Header="Rename" Click="Rename"/>
-                                <MenuItem Header="Delete" Click="Delete"/>
+                                <MenuItem Header="{Binding Name}" IsEnabled="False"/>
+                                <MenuItem Header="Rename" Click="Rename_Pass"/>
+                                <MenuItem Header="Delete" Click="Delete_Pass"/>
                             </ContextMenu>
                         </StackPanel.ContextMenu>
-                        <TextBlock x:Name="PasswordNameBlock" Text="{Binding Header, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
-                                   FontStyle="Italic"  HorizontalAlignment="Center" VerticalAlignment="Center" 
-                                   Visibility="{Binding IsIsBeingEdited, Converter={StaticResource amIVisible}, UpdateSourceTrigger=PropertyChanged}"/>
-                        <TextBox x:Name="PasswordNameBox" Text="{Binding Path=Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FontStyle="Italic"  
-                                 HorizontalAlignment="Center" VerticalAlignment="Center" 
-                                 Visibility="{Binding IsIsBeingEdited, Converter={StaticResource amIVisible}, UpdateSourceTrigger=PropertyChanged}" />
-                        <!--  KeyDown="PasswordNameBox_KeyDown" />-->
+                        <TextBlock Text="{Binding Name}" FontStyle="Italic"  HorizontalAlignment="Center" VerticalAlignment="Center" 
+                                   Visibility="{Binding IsBeingEdited, Converter={StaticResource isBlockVisible}}"/>
+                        <TextBox Text="{Binding Name}" FontStyle="Italic"  HorizontalAlignment="Center" VerticalAlignment="Center" 
+                                 Visibility="{Binding IsBeingEdited, Converter={StaticResource isTextVisible}}" KeyDown="EndEditing_Pass"/>
                     </StackPanel>
-                    <!-- Path=passwordName-->
                 </DataTemplate>
-                <Style TargetType="TreeView">
-                    <EventSetter Event="MouseRightButtonDown" Handler="TreeView_MouseRightButtonDown"/>
-                </Style>
             </TreeView.Resources>
             <TreeView.ItemContainerStyle>
                 <Style TargetType="{x:Type TreeViewItem}">
                     <EventSetter Event="Selected" Handler="TreeViewItem_Selected"/>
-                    <!-- <EventSetter Event="MouseRightButtonDown" Handler="TreeViewItem_MouseRightButtonDown"/> -->
+                    <EventSetter Event="LostFocus" Handler="ItemLostFocus"/>
                 </Style>
             </TreeView.ItemContainerStyle>
         </TreeView>

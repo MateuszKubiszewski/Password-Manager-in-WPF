@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Text;
@@ -14,13 +16,57 @@ namespace Password_Manager
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            Passwords passwords = value as Passwords;
-            if (passwords.PasswordsList.Count == 0)
+            if (value == null || (value as ObservableCollection<PasswordItem>).Count == 0)
                 return null;
-            return passwords.PasswordsList.ToArray();
+            return (value as ObservableCollection<PasswordItem>).ToArray();
+            
         }
+        //public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        //{
+        //    if (value == null || (value as Passwords).PasswordsList.Count == 0)
+        //        return null;
+        //    return (value as Passwords).PasswordsList.ToArray();
+        //}
+        //public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        //{
+        //    if (value == null)
+        //        return null;
+        //    string searchText = (value as Passwords).SearchText;
+        //    if (searchText == "" || searchText == null)
+        //        return (value as Passwords).PasswordsList;
+        //    string filter = searchText.ToLower();
+        //    ObservableCollection<PasswordItem> toRet = new ObservableCollection<PasswordItem>();
+        //    foreach (var item in (value as Passwords).PasswordsList)
+        //    {
+        //        if (item.Name.ToLower().Contains(filter))
+        //            toRet.Add(item);
+        //    }
+        //    return toRet;
+        //}
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    class MultiDataConverter : IMultiValueConverter
+    {
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (values[1] as string == null || values[1] as string == "")
+                return (values[0] as List<PasswordItem>).ToArray();
+            string filter = (values[1] as string).ToLower();
+            List<PasswordItem> toRet = new List<PasswordItem>();
+            foreach (var item in values[0] as List<PasswordItem>)
+            {
+                if (item.Name.ToLower().Contains(filter))
+                    toRet.Add(item);
+            }
+            return toRet.ToArray();
+        }
+
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
         {
             throw new NotImplementedException();
         }
@@ -144,8 +190,8 @@ namespace Password_Manager
         {
             if (value == null)
                 return String.Empty;
-            BitmapImage icon = (BitmapImage)value;
-            return $"Resolution: {icon.PixelWidth}x{icon.PixelHeight}\nDPI: {icon.DpiX}x{icon.DpiY}\nFormat: {icon.Format}";
+            var bitmap = value as System.Windows.Media.Imaging.BitmapFrame;
+            return $"Resolution: {bitmap.PixelWidth}x{bitmap.PixelHeight}\nDPI: {bitmap.DpiX}x{bitmap.DpiY}\nFormat: {bitmap.Format}";
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -162,6 +208,39 @@ namespace Password_Manager
                 return "Select";
             else
                 return "";
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    class MaskPassword : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value == null)
+                return null;
+            string toRet = "";
+            foreach (var letter in (value as string))
+            {
+                toRet += '\u2022';
+            }
+            return toRet;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    class MailConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return $"mailto:{value}";
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

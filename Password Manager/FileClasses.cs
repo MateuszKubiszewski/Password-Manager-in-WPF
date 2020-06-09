@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -11,32 +12,121 @@ using System.Windows.Media.Imaging;
 
 namespace Password_Manager
 {
-    //public class Image : TreeViewItem
-    //{
-    //    public BitmapImage Img = null;
-
-    //    public bool IsBeingEdited = false;
-
-    //    public Image()
-    //    {
-    //        this.Header = "New Image";
-    //        this.FontStyle = FontStyles.Italic;
-    //        this.FontWeight = FontWeights.Normal;
-    //    }
-    //}
-
+    [Serializable]
     public class Image : INotifyPropertyChanged
     {
-        BitmapImage img;
-        public BitmapImage Img
+        public Directory Parent { get; set; }
+        public string Path { get; set; }
+        string name;
+        public string Name
         {
-            get { return img; }
+            get { return name; }
             set
             {
-                img = value;
-                NotifyPropertyChanged("Img");
+                name = value;
+                NotifyPropertyChanged("Name");
             }
         }
+        bool isbeingedited;
+        public bool IsBeingEdited
+        {
+            get { return isbeingedited; }
+            set
+            {
+                isbeingedited = value;
+                NotifyPropertyChanged("IsBeingEdited");
+            }
+        }
+        public Image()
+        {
+            Path = null;
+            Name = "New Image";
+            IsBeingEdited = false;
+            Parent = null;
+        }
+
+        [field: NonSerialized()]
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
+        {
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
+
+    [Serializable]
+    public class Directory : INotifyPropertyChanged
+    {
+        public Directory Parent { get; set; }
+        string name;
+        public string Name
+        {
+            get { return name; }
+            set
+            {
+                name = value;
+                NotifyPropertyChanged("Name");
+            }
+        }
+        bool isbeingedited;
+        public bool IsBeingEdited
+        {
+            get { return isbeingedited; }
+            set
+            {
+                isbeingedited = value;
+                NotifyPropertyChanged("IsBeingEdited");
+            }
+        }
+        List<INotifyPropertyChanged> files;
+        public List<INotifyPropertyChanged> Files
+        {
+            get { return files; }
+            set
+            {
+                files = value;
+                NotifyPropertyChanged("Files");
+            }
+        }
+
+        [field: NonSerialized()]
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
+        {
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
+        public Directory()
+        {
+            Name = "New Directory";
+            IsBeingEdited = false;
+            Files = new List<INotifyPropertyChanged>();
+            Parent = null;
+        }
+
+        public void Add(INotifyPropertyChanged file)
+        {
+            Files.Add(file);
+            NotifyPropertyChanged("Files");
+        }
+
+        public void Remove(INotifyPropertyChanged file)
+        {
+            Files.Remove(file);
+            NotifyPropertyChanged("Files");
+        }
+    }
+
+    [Serializable]
+    public class Passwords : INotifyPropertyChanged
+    {
+        public Directory Parent { get; set; }
         string name;
         public string Name
         {
@@ -58,13 +148,7 @@ namespace Password_Manager
             }
         }
 
-        public Image()
-        {
-            Img = null;
-            Name = "New Image";
-            IsBeingEdited = false;
-        }
-
+        [field: NonSerialized()]
         public event PropertyChangedEventHandler PropertyChanged;
 
         public void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
@@ -74,35 +158,45 @@ namespace Password_Manager
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
-    }
-
-    public class Directory : TreeViewItem
-    {
-        public bool IsBeingEdited = false;
-
-        public Directory()
+        ObservableCollection<PasswordItem> passwordslist;
+        public ObservableCollection<PasswordItem> PasswordsList
         {
-            this.Header = "New Directory";
-            this.FontWeight = FontWeights.Bold;
+            get { return passwordslist; }
+            set
+            {
+                passwordslist = value;
+                NotifyPropertyChanged("PasswordsList");
+            }
         }
-    }
-
-    public class Passwords : TreeViewItem
-    {
-        public List<PasswordItem> PasswordsList = new List<PasswordItem>();
-
-        public bool IsBeingEdited = false;
+        string searchtext;
+        public string SearchText
+        {
+            get { return searchtext; }
+            set
+            {
+                searchtext = value;
+                NotifyPropertyChanged("SearchText");
+            }
+        }
 
         public Passwords()
         {
-            this.Header = "New Passwords";
-            this.FontStyle = FontStyles.Italic;
-            this.FontWeight = FontWeights.Normal;
+            Name = "New Passwords";
+            IsBeingEdited = false;
+            PasswordsList = new ObservableCollection<PasswordItem>();
+            Parent = null;
         }
 
-        public Passwords(List<PasswordItem> passes)
+        public void Add(PasswordItem pass)
         {
-            PasswordsList = passes;
+            PasswordsList.Add(pass);
+            NotifyPropertyChanged("PasswordsList");
+        }
+
+        public void Remove(PasswordItem pass)
+        {
+            PasswordsList.Remove(pass);
+            NotifyPropertyChanged("PasswordsList");
         }
     }
 }
