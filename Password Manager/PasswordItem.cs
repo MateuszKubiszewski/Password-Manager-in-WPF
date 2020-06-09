@@ -9,24 +9,6 @@ using System.Windows.Media.Imaging;
 
 namespace Password_Manager
 {
-    public class Passwords : File
-    {
-        static int i = 0;
-        public List<PasswordItem> items = new List<PasswordItem>();
-        public Passwords()
-        {
-            isbold = false;
-            Name = "Passwords" + i;
-            i++;
-        }
-        public Passwords(List<PasswordItem> _items, string _name)
-        {
-            isbold = false;
-            Name = _name;
-            items = _items;
-        }
-    }
-
     public class PasswordItem : INotifyPropertyChanged
     {
         BitmapImage icon;

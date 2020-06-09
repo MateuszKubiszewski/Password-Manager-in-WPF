@@ -33,7 +33,7 @@ namespace Password_Manager.Pages
             //var item = new ListViewItem();
             //item.Name = "Account Name";
             //PasswordList.Items.Add(item)
-            ((this.DataContext as Data).File as Passwords).items.Add(pass);
+            ((this.DataContext as Data).File as Passwords).PasswordsList.Add(pass);
             (this.DataContext as Data).NotifyPropertyChanged("File");
             PasswordList.SelectedItem = pass;
             PasswordForm.Visibility = Visibility.Visible;
@@ -111,7 +111,8 @@ namespace Password_Manager.Pages
 
         private void DeleteClick(object sender, RoutedEventArgs e)
         {
-            ((this.DataContext as Data).File as Passwords).items.Remove((PasswordItem)PasswordList.SelectedItem);
+            ((this.DataContext as Data).File as Passwords).Items.Remove((PasswordItem)PasswordList.SelectedItem);
+
             (this.DataContext as Data).NotifyPropertyChanged("File");
             PasswordForm.Visibility = Visibility.Hidden;
             SavedForm.Visibility = Visibility.Hidden;

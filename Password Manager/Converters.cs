@@ -15,9 +15,9 @@ namespace Password_Manager
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             Passwords passwords = value as Passwords;
-            if (passwords.items.Count == 0)
+            if (passwords.PasswordsList.Count == 0)
                 return null;
-            return passwords.items.ToArray();
+            return passwords.PasswordsList.ToArray();
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

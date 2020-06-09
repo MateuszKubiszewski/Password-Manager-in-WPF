@@ -6,13 +6,14 @@ using System.Runtime.CompilerServices;
 using System.Runtime.Remoting.Channels;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 
 namespace Password_Manager
 {
     class Data : INotifyPropertyChanged
     {
         // These fields hold the values for the public properties.
-        File file;
+        TreeViewItem file;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -26,7 +27,7 @@ namespace Password_Manager
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
-        public File File
+        public TreeViewItem File
         {
             get
             {
@@ -43,44 +44,4 @@ namespace Password_Manager
             }
         }
     }
-
-    //class Data : INotifyPropertyChanged
-    //{
-    //    // These fields hold the values for the public properties.
-    //    File file;
-
-
-    //    public event PropertyChangedEventHandler PropertyChanged = (sender, e) => { };
-
-    //    public void Update()
-    //    {
-    //        PropertyChanged(this, new PropertyChangedEventArgs(nameof(file)));
-    //    }
-        
-    //    public File File
-    //    {
-    //        get
-    //        {
-    //            return this.file;
-    //        }
-
-    //        set
-    //        {
-    //            if (value != this.file)
-    //            {
-    //                this.file = value;
-    //                Update();
-    //            }
-    //        }
-    //    }
-    //}
 }
-
-//public void OnPropertyChanged(String info)
-//{
-//    PropertyChangedEventHandler handler = PropertyChanged;
-//    if (handler != null)
-//    {
-//        handler(this, new PropertyChangedEventArgs(info));
-//    }
-//}

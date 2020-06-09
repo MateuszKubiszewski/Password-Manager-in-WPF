@@ -7,7 +7,19 @@
              xmlns:local="clr-namespace:Password_Manager.Pages"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
+    <Page.Resources>
+        <local:ImagePageConverter x:Key="imgPageConverter"/>
+    </Page.Resources>
+    <!--<DockPanel x:Name="container" VerticalAlignment="Top">
+        <Image Source="{Binding File, Converter={StaticResource imgPageConverter}}" DockPanel.Dock="Top" Margin="5,0,5,10"/>
+        <Button Content="Save Image" Height="20" Width="100" DockPanel.Dock="Bottom"/>
+    </DockPanel>-->
     <Grid>
-        <TextBlock Text="heh" FontSize="200"/>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+        <Image Source="{Binding File, Converter={StaticResource imgPageConverter}}" Grid.Row="0" Margin="5,0,5,10"/>
+        <Button Content="Save Image" Height="20" Width="100" Grid.Row="1" Margin="0,0,0,10"/>
     </Grid>
 </Page>
