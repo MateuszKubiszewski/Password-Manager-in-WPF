@@ -42,15 +42,15 @@ namespace Password_Manager.Pages
             }
             else
             {
-                Byte[] encryptedData = File.ReadAllBytes("Passwords.bin");
-                Byte[] data = WPF_Project.DataEncryption.Decrypt(passwordBox.Password, encryptedData);
-                if (data == null)
+                Byte[] Encrypted = File.ReadAllBytes("Passwords.bin");
+                Byte[] Data = WPF_Project.DataEncryption.Decrypt(passwordBox.Password, Encrypted);
+                if (Data == null)
                 {
                     MessageBox.Show("Invalid Password", "Invalid Password", MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
                 }
                 var Formatter = new BinaryFormatter();
-                var Stream = new MemoryStream(data);
+                var Stream = new MemoryStream(Data);
                 var lp = new LoggedInPage();
                 lp.Items = (ObservableCollection<INotifyPropertyChanged>)Formatter.Deserialize(Stream);
                 lp.DataContext = lp.Items;

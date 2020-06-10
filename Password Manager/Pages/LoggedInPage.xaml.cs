@@ -196,9 +196,9 @@ namespace Password_Manager.Pages
             var Formatter = new BinaryFormatter();
             var Stream = new MemoryStream();
             Formatter.Serialize(Stream, this.Items);
-            Byte[] data = Stream.ToArray();
-            Byte[] encryptedData = WPF_Project.DataEncryption.Encrypt(this.Password, data);
-            File.WriteAllBytes("Passwords.bin", encryptedData);
+            Byte[] Data = Stream.ToArray();
+            Byte[] Encrypted = WPF_Project.DataEncryption.Encrypt(this.Password, Data);
+            File.WriteAllBytes("Passwords.bin", Encrypted);
         }
     }
 

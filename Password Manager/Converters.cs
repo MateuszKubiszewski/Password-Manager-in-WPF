@@ -21,28 +21,6 @@ namespace Password_Manager
             return (value as ObservableCollection<PasswordItem>).ToArray();
             
         }
-        //public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        //{
-        //    if (value == null || (value as Passwords).PasswordsList.Count == 0)
-        //        return null;
-        //    return (value as Passwords).PasswordsList.ToArray();
-        //}
-        //public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        //{
-        //    if (value == null)
-        //        return null;
-        //    string searchText = (value as Passwords).SearchText;
-        //    if (searchText == "" || searchText == null)
-        //        return (value as Passwords).PasswordsList;
-        //    string filter = searchText.ToLower();
-        //    ObservableCollection<PasswordItem> toRet = new ObservableCollection<PasswordItem>();
-        //    foreach (var item in (value as Passwords).PasswordsList)
-        //    {
-        //        if (item.Name.ToLower().Contains(filter))
-        //            toRet.Add(item);
-        //    }
-        //    return toRet;
-        //}
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
@@ -173,7 +151,7 @@ namespace Password_Manager
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value == null)
+            if (value == null || (value as string) == "")
                 return String.Empty;
             return (value as string).First().ToString();
         }
@@ -190,7 +168,7 @@ namespace Password_Manager
         {
             if (value == null)
                 return String.Empty;
-            var bitmap = value as System.Windows.Media.Imaging.BitmapFrame;
+            var bitmap = value as System.Windows.Media.Imaging.BitmapImage;
             return $"Resolution: {bitmap.PixelWidth}x{bitmap.PixelHeight}\nDPI: {bitmap.DpiX}x{bitmap.DpiY}\nFormat: {bitmap.Format}";
         }
 

@@ -40,8 +40,6 @@ namespace Password_Manager.Pages
         //https://www.c-sharpcorner.com/UploadFile/mahesh/using-xaml-image-in-wpf/
         private void AddImageClick(object sender, RoutedEventArgs e)
         {
-            PasswordItem item = PasswordList.SelectedItem as PasswordItem;
-
             System.Windows.Forms.OpenFileDialog dlg = new System.Windows.Forms.OpenFileDialog();
             dlg.InitialDirectory = "C:\\";
             dlg.Filter = "Image files (*.jpg)|*.jpg|All Files (*.*)|*.*";
@@ -49,10 +47,9 @@ namespace Password_Manager.Pages
 
             if (dlg.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                item.Icon = dlg.FileName;
+                ButtonImage.Source = new BitmapImage(new Uri(dlg.FileName));
+                ButtonImage.Tag = dlg.FileName;
             }
-            long toAdd = System.DateTime.Now.Ticks - item.EditDate.Ticks;
-            item.EditDate = item.EditDate.Add(new TimeSpan(toAdd));
             (this.DataContext as Passwords).NotifyPropertyChanged("PasswordList");
         }
 
@@ -60,7 +57,7 @@ namespace Password_Manager.Pages
         {
             PasswordItem item = PasswordList.SelectedItem as PasswordItem;
 
-            if (item.Name == Name.Text && item.Login == Login.Text && item.Email == Email.Text && 
+            if (item.Name == Name.Text && item.Login == Login.Text && item.Email == Email.Text && item.Icon == (ButtonImage.Tag as string) &&
                 item.Website == Website.Text && item.Notes == Notes.Text && item.Password == Password.Text)
             {
                 PasswordForm.Visibility = Visibility.Hidden;
@@ -68,6 +65,7 @@ namespace Password_Manager.Pages
                 TurnOffEditMode();
                 return;
             }
+            item.Icon = ButtonImage.Tag as string;
             item.Name = Name.Text;
             item.Login = Login.Text;
             item.Email = Email.Text;
@@ -83,6 +81,8 @@ namespace Password_Manager.Pages
             PasswordList.SelectedItem = itemToAdd;
             PasswordForm.Visibility = Visibility.Hidden;
             SavedForm.Visibility = Visibility.Visible;
+            ButtonImage.Source = null;
+            ButtonImage.Tag = null;
             TurnOffEditMode();
         }
 
