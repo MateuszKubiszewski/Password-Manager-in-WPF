@@ -168,6 +168,8 @@ namespace Password_Manager
         {
             if (value == null)
                 return String.Empty;
+            if (value == null)
+                return String.Empty;
             var bitmap = value as System.Windows.Media.Imaging.BitmapImage;
             return $"Resolution: {bitmap.PixelWidth}x{bitmap.PixelHeight}\nDPI: {bitmap.DpiX}x{bitmap.DpiY}\nFormat: {bitmap.Format}";
         }
